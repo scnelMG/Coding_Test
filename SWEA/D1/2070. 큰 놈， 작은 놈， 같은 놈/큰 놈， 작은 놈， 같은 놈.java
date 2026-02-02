@@ -19,7 +19,6 @@ class Solution {
 				res = "=";
 
 			System.out.println("#" + test_case + " " + res);
-
 		}
 	}
 }
