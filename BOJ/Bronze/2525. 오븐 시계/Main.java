@@ -11,12 +11,12 @@ class Main {
 
         if (B + C > 60) {
             A += (B + C) / 60;
-            B = B + C - 60 * ((B + C) / 60);
+            B = (B + C) - 60 * ((B + C) / 60);
         } else
             B += C;
 
         if (A > 23) {
-            A = 0;
+            A = A - 24;
         }
         System.out.println(A + " " + B);
     }
