@@ -10,6 +10,7 @@ class Solution {
 			int a = sc.nextInt();
 			int b = sc.nextInt();
 			String res;
+            
 			if (a > b)
 				res = ">";
 			else if (a < b)
