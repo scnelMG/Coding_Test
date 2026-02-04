@@ -1,56 +1,50 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
         int N = sc.nextInt();
         int M = sc.nextInt();
-        String[][] codes = new String[N][7];
-        String[] names = new String[N];
 
-        for (int tc = 0; tc < N; tc++) {
-            int T = sc.nextInt();
+        // key(앞 3개 코드) -> 곡명 or "?"(중복 표시)
+        Map<String, String> map = new HashMap<>(N * 2);
+
+        for (int i = 0; i < N; i++) {
+            int T = sc.nextInt(); // 필요 없으면 안 써도 됨
             String song = sc.next();
-            names[tc] = song;
-            codes[tc] = new String[7];
-            for (int i = 0; i < codes[0].length; i++) {
-                codes[tc][i] = sc.next();
-            }
+
+            String c0 = sc.next();
+            String c1 = sc.next();
+            String c2 = sc.next();
+
+            // 나머지 4개는 읽어서 버림 (입력 구조상 존재)
+            for (int k = 0; k < 4; k++)
+                sc.next();
+
+            String key = c0 + "#" + c1 + "#" + c2;
+
+            // 처음이면 곡명 저장, 이미 있으면 중복 처리("?")
+            String prev = map.putIfAbsent(key, song);
+            if (prev != null)
+                map.put(key, "?");
         }
 
-        boolean exist;
-        boolean no;
-        int idx;
-        for (int tc = 0; tc < M; tc++) {
-            idx = -1;
-            exist = false;
-            no = false;
-            String input1 = sc.next();
-            String input2 = sc.next();
-            String input3 = sc.next();
-            for (int i = 0; i < N; i++) {
+        StringBuilder sb = new StringBuilder();
 
-                if (codes[i][0].equals(input1) && codes[i][1].equals(input2) && codes[i][2].equals(input3)) {
-                    if (!exist) {
-                        idx = i;
-                        exist = true;
-                    } else {
-                        no = true;
-                        break;
-                    }
-                }
-            }
-            // System.out.println(idx);
+        for (int i = 0; i < M; i++) {
+            String key = sc.next() + "#" + sc.next() + "#" + sc.next();
 
-            if (no) {
-                System.out.println("?");
-            } else if (exist) {
-                System.out.println(names[idx]);
-            } else {
-                System.out.println("!");
-            }
-
+            String val = map.get(key);
+            if (val == null)
+                sb.append("!\n");
+            else
+                sb.append(val).append('\n'); // 곡명 또는 "?"
         }
 
+        System.out.print(sb.toString());
+        sc.close();
     }
 }
