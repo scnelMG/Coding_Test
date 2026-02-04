@@ -14,7 +14,7 @@ class Main {
             if (a == 1) {
                 int s = sc.nextInt();
                 int e = sc.nextInt();
-                int res = 0;
+                long res = 0;
                 for (int j = s; j < e + 1; j++) {
                     res += arr[j - 1];
                 }
@@ -29,12 +29,12 @@ class Main {
                 int s2 = sc.nextInt();
                 int e2 = sc.nextInt();
 
-                int res1 = 0;
+                long res1 = 0;
                 for (int j = s1; j < e1 + 1; j++) {
                     res1 += arr[j - 1];
                 }
 
-                int res2 = 0;
+                long res2 = 0;
                 for (int j = s2; j < e2 + 1; j++) {
                     res2 += arr[j - 1];
                 }
