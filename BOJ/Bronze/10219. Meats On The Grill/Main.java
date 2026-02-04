@@ -8,6 +8,8 @@ class Main {
             int H = sc.nextInt();
             int W = sc.nextInt();
             char[][] grid = new char[H][W];
+
+            // 배열에 입력 받기
             for (int i = 0; i < H; i++) {
                 String temp = sc.next();
                 for (int j = 0; j < W; j++) {
@@ -15,6 +17,7 @@ class Main {
                 }
             }
 
+            // 거꾸로 출력하기
             for (int i = 0; i < H; i++) {
                 for (int j = W - 1; j >= 0; j--) {
                     System.out.print(grid[i][j]);
