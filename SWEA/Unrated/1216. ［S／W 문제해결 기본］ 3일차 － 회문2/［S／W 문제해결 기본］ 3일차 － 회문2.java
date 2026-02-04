@@ -23,7 +23,7 @@ class Solution {
 				for (int i = 100; i > 1; i--) { // i : 탐색하는 회문 길이
 					for (int j = 0; j < N - i + 1; j++) { // j : 길이에 대해서 하나식 옮겨가면서 회문 체크
 						Boolean isPal = true;
-						for (int k = 0; k < i / 2; k++) {
+						for (int k = 0; k < i / 2; k++) { // 회문 판별
 							if (arr[row][j + k] != arr[row][j + i - 1 - k]) {
 								isPal = false;
 								break;
@@ -31,21 +31,18 @@ class Solution {
 						}
 						if (isPal && i > max_len) {
 							max_len = i;
-
 						}
 
-					}
-
-				}
-
-			}
+					} // 선택된 길이를 하나씩 옮겨가는 for문
+				} // 길이 선택하는 for문
+			} // 행 도는 for문
 
 			// 열에서 회문 탐색
 			for (int col = 0; col < N; col++) {
 				for (int i = 100; i > 1; i--) { // i : 탐색하는 회문 길이
 					for (int j = 0; j < N - i + 1; j++) { // j : 길이에 대해서 하나식 옮겨가면서 회문 체크
 						Boolean isPal = true;
-						for (int k = 0; k < i / 2; k++) {
+						for (int k = 0; k < i / 2; k++) { // 회문 판별
 							if (arr[j + k][col] != arr[j + i - 1 - k][col]) {
 								isPal = false;
 								break;
@@ -53,16 +50,11 @@ class Solution {
 						}
 						if (isPal && i > max_len) {
 							max_len = i;
-
 						}
-
-					}
-
-				}
-
-			}
+					} // 선택된 길이를 하나씩 옮겨가는 for문
+				} // 길이 선택하는 for문
+			} // 열 도는 for문
 			System.out.println("#" + T + " " + max_len);
-
 		}
 	}
 }
