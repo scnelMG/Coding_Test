@@ -11,8 +11,10 @@ public class Main {
 			res[i] = N-i;
 		}
 		
-
-		System.out.println(Arrays.toString(res));
+		for (int i = 0; i< N; i++) {
+			System.out.print(res[i] + " ");
+		}
+		
 	}
 
 }
