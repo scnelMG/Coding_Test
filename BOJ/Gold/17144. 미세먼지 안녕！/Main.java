@@ -1,90 +1,242 @@
 import java.util.Scanner;
 
+
+
 class Main {
+
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
+
         int R = sc.nextInt();
+
         int C = sc.nextInt();
+
         int T = sc.nextInt();
 
+
+
         int[] dr = { -1, 1, 0, 0 }; // 상하좌우
+
         int[] dc = { 0, 0, -1, 1 };
 
-        int[][] grid = new int[R][C];
-        int airUpper = -1; // 윗 공기청정기 위치
-        int airLower = -1; // 아래 공기청정기 위치
 
-        // 배열에 값 저장
+
+        int[][] grid = new int[R][C];
+
         for (int i = 0; i < R; i++) {
+
             for (int j = 0; j < C; j++) {
+
                 grid[i][j] = sc.nextInt();
-                if (grid[i][j] == -1) { // 공기청정기 위치 저장
-                    if (airUpper == -1)
-                        airUpper = i;
-                    else
-                        airLower = i;
-                }
+
             }
+
         }
+
+
+
+        int[][] grid2 = new int[R][C];
+
+        for (int i = 0; i < R; i++) {
+
+            grid2[i][0] = grid[i][0];
+
+        }
+
+
 
         for (int t = 0; t < T; t++) {
-            // 먼지 확산
 
-            // 확산 배열 생성
-            int[][] grid2 = new int[R][C];
+            // 미세먼지 확산
+
             for (int i = 0; i < R; i++) {
+
                 for (int j = 0; j < C; j++) {
-                    if (grid[i][j] == -1) {
-                        grid2[i][j] = -1; // 공기청정기 위치 넣기
-                    } else if (grid[i][j] > 0) {
-                        int amount = grid[i][j] / 5;
-                        int cnt = 0;
+
+                    if (grid[i][j] > 0) { // 미세먼지가 있으면 4방향 탐색
+
+                        int cnt = 4;
+
                         for (int d = 0; d < 4; d++) {
-                            int ni = i + dr[d];
-                            int nj = j + dc[d];
-                            if (ni >= 0 && ni < R && nj >= 0 && nj < C && grid[ni][nj] != -1) {
-                                grid2[ni][nj] += amount;
-                                cnt++;
+
+                            if (i + dr[d] < 0 || i + dr[d] >= R || j + dc[d] < 0 || j + dc[d] >= C) {
+
+                                cnt--;
+
+                            } else if (grid[i + dr[d]][j + dc[d]] == -1) {
+
+                                cnt--;
+
+                            } else {
+
+                                grid2[i + dr[d]][j + dc[d]] += grid[i][j] / 5;
+
                             }
+
                         }
-                        grid2[i][j] += grid[i][j] - (amount * cnt); // 확산 배열에 확산 결과 추가
+
+                        grid2[i][j] += (grid[i][j] - (cnt * (grid[i][j] / 5)));
+
                     }
+
                 }
+
             }
-            grid = grid2; // 확산 완료된 배열로 교체
 
-            // 2. 공기청정기 작동 (바람의 역순으로 당기기)
-            // 위쪽 공기청정기 (반시계방향)
-            for (int i = airUpper - 1; i > 0; i--)
-                grid[i][0] = grid[i - 1][0]; // 왼쪽 아래로
-            for (int j = 0; j < C - 1; j++)
-                grid[0][j] = grid[0][j + 1]; // 윗쪽 왼쪽으로
-            for (int i = 0; i < airUpper; i++)
-                grid[i][C - 1] = grid[i + 1][C - 1]; // 오른쪽 위로
-            for (int j = C - 1; j > 1; j--)
-                grid[airUpper][j] = grid[airUpper][j - 1]; // 아래쪽 오른쪽으로
-            grid[airUpper][1] = 0; // 먼지 제거
+            boolean isFirst = true;
 
-            // 아래쪽 공기청정기 (시계방향)
-            for (int i = airLower + 1; i < R - 1; i++)
-                grid[i][0] = grid[i + 1][0]; // 왼쪽 위로
-            for (int j = 0; j < C - 1; j++)
-                grid[R - 1][j] = grid[R - 1][j + 1]; // 아래쪽 왼쪽으로
-            for (int i = R - 1; i > airLower; i--)
-                grid[i][C - 1] = grid[i - 1][C - 1]; // 오른쪽 아래로
-            for (int j = C - 1; j > 1; j--)
-                grid[airLower][j] = grid[airLower][j - 1]; // 윗쪽 오른쪽으로
-            grid[airLower][1] = 0; // 먼지 제거
+            for (int i = 0; i < R; i++) {
+
+                if (grid2[i][0] == -1 && isFirst) { // 거꾸로 돌면서 이동시키기
+
+                    // 왼쪽 위로
+
+                    for (int k = i; k > 0; k--) {
+
+                        grid2[k][0] = grid2[k - 1][0];
+
+                    }
+
+                    grid2[i][0] = -1; // 먼지 제거
+
+
+
+                    // 위 오른쪽
+
+                    for (int j = 0; j < C - 1; j++) {
+
+                        grid2[0][j] = grid2[0][j + 1];
+
+                    }
+
+
+
+                    // 오른쪽 아래
+
+                    for (int k = 0; k < i; k++) {
+
+                        grid2[k][C - 1] = grid2[k + 1][C - 1];
+
+                    }
+
+
+
+                    // 아래 왼쪽
+
+                    for (int j = C - 1; j > 1; j--) {
+
+                        grid2[i][j] = grid2[i][j - 1];
+
+                    }
+
+                    grid2[i][1] = 0;
+
+                    isFirst = false;
+
+                } else if (grid2[i][0] == -1 && !isFirst) {
+
+                    // 왼쪽 아래로
+
+                    for (int k = i; k < R - 1; k++) {
+
+                        grid2[k][0] = grid2[k + 1][0];
+
+                    }
+
+                    grid2[i][0] = -1; // 먼지 제거
+
+
+
+                    // 아래 오른쪽
+
+                    for (int j = 0; j < C - 1; j++) {
+
+                        grid2[R - 1][j] = grid2[R - 1][j + 1];
+
+                    }
+
+
+
+                    // 오른쪽 위
+
+                    for (int k = R - 1; k > i; k--) {
+
+                        grid2[k][C - 1] = grid2[k - 1][C - 1];
+
+                    }
+
+
+
+                    // 위 왼쪽
+
+                    for (int j = C - 1; j > 1; j--) {
+
+                        grid2[i][j] = grid2[i][j - 1];
+
+                    }
+
+                    grid2[i][1] = 0;
+
+                }
+
+            }
+
+
+
+            int[][] tmp = grid;
+
+            grid = grid2;
+
+            grid2 = tmp;
+
+
+
+            grid2 = new int[R][C];
+
+            for (int i = 0; i < R; i++) {
+
+                grid2[i][0] = grid[i][0];
+
+            }
+
+
+
         }
 
-        // 합 계산
-        int res = 0;
+
+
         for (int i = 0; i < R; i++) {
+
             for (int j = 0; j < C; j++) {
-                if (grid[i][j] > 0) // 공기청정기 값 제외
-                    res += grid[i][j];
+
+                System.out.print(grid[i][j] + " ");
+
             }
+
+            System.out.println();
+
         }
+
+
+
+        int res = 2; // -1이 2개인거 처리
+
+        for (int i = 0; i < R; i++) {
+
+            for (int j = 0; j < C; j++) {
+
+                res += grid[i][j];
+
+            }
+
+        }
+
         System.out.println(res);
+
+
+
     }
+
 }
+
