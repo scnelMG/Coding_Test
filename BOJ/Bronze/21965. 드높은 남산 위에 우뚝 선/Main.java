@@ -13,17 +13,6 @@ class Main {
             arr[i] = sc.nextInt();
         }
 
-        if (n == 1) {
-            System.out.println("YES");
-            return;
-
-        }
-
-        if (arr[0] >= arr[1]) {
-            System.out.println("NO");
-            return;
-        }
-
         for (int i = 1; i < n; i++) {
             if (arr[i - 1] == arr[i]) {
                 res = false;
