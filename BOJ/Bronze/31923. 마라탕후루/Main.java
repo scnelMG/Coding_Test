@@ -20,7 +20,9 @@ class Main {
         }
 
         for (int n = 0; n < N; n++) {
-            if ((fruits[0][n] - fruits[1][n]) * (P - Q) > 0) {
+            if ((fruits[0][n] - fruits[1][n] == 0) && (P - Q == 0))
+                break;
+            if ((fruits[0][n] - fruits[1][n]) * (P - Q) >= 0) {
                 isGood = false;
                 break;
             }
