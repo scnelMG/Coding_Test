@@ -25,8 +25,7 @@ class Main {
             }
             if (up && arr[i - 1] > arr[i]) {
                 up = false;
-            }
-            if (!up && arr[i - 1] < arr[i]) {
+            } else if (!up && arr[i - 1] < arr[i]) {
                 res = false;
                 break;
             }
