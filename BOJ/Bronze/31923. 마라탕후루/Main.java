@@ -20,16 +20,23 @@ class Main {
         }
 
         for (int n = 0; n < N; n++) {
-            if ((fruits[0][n] - fruits[1][n] == 0) && (P - Q == 0))
-                break;
-            else if ((fruits[0][n] - fruits[1][n] != 0) && (P - Q == 0)) {
+            if ((fruits[0][n] - fruits[1][n] == 0)) {
+                continue;
+            }
+            if (P - Q == 0) {
                 isGood = false;
                 break;
             }
+
             if ((fruits[0][n] - fruits[1][n]) * (P - Q) > 0) {
                 isGood = false;
                 break;
             }
+            if (Math.abs(fruits[0][n] - fruits[1][n]) < Math.abs(P - Q)) {
+                isGood = false;
+                break;
+            }
+
             res[n] = Math.abs(fruits[0][n] - fruits[1][n]) / Math.abs(P - Q);
         }
         if (isGood) {
