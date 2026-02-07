@@ -1,10 +1,13 @@
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
         int[][] arr = new int[N][N];
+        Set<Integer> set = new HashSet<>();
 
         int goal = N * (N * N + 1) / 2;
         boolean isGood = true;
@@ -12,8 +15,12 @@ class Main {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 arr[i][j] = sc.nextInt();
+                set.add(arr[i][j]);
             }
         }
+
+        if (set.size() != N * N)
+            isGood = false;
 
         for (int i = 0; i < N; i++) {
             int sum = 0;
