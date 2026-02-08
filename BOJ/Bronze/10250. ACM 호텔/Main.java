@@ -8,7 +8,7 @@ class Main {
             int H = sc.nextInt();
             int W = sc.nextInt();
             int N = sc.nextInt();
-            if (((1 + N / H)) < 10)
+            if ((((N - 1) / H) + 1) < 10)
                 System.out.println((((N - 1) % H) + 1) + "0" + (((N - 1) / H) + 1));
             else
                 System.out.println((((N - 1) % H) + 1) + "" + (((N - 1) / H) + 1));
