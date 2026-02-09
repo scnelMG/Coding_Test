@@ -8,7 +8,7 @@ public class Main {
 		int res = 0;
 		int resIdx = -1;
 		for (int i = 0; i < s.length(); i++) {
-			if (i != '*') {
+			if (s.charAt(i) != '*') {
 				if (i % 2 == 0) {
 					res += (s.charAt(i) - '0');
 				} else {
@@ -20,9 +20,9 @@ public class Main {
 
 		}
 		if (resIdx % 2 == 0)
-			System.out.println(10 - res % 10);
+			System.out.println(10 - (res % 10));
 		else
-			System.out.println((10 - res % 10) / 3);
+			System.out.println((10 - (res % 10)) / 3);
 
 	}
 
