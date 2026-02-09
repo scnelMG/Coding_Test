@@ -6,24 +6,31 @@ public class Main {
 		String s = sc.next();
 
 		int res = 0;
-		int resIdx = -1;
+		int starIdx = -1;
+
 		for (int i = 0; i < s.length(); i++) {
-			if (s.charAt(i) != '*') {
-				if (i % 2 == 0) {
-					res += (s.charAt(i) - '0');
-				} else {
-					res += (s.charAt(i) - '0') * 3;
-				}
-			} else {
-				resIdx = i;
+			char ch = s.charAt(i);
+
+			if (ch == '*') {
+				starIdx = i;
+				continue;
 			}
 
+			int digit = ch - '0';
+
+			if (i % 2 == 0) {
+				res += digit;
+			} else {
+				res += digit * 3;
+			}
 		}
-		if (resIdx % 2 == 0)
-			System.out.println(10 - (res % 10));
-		else
-			System.out.println((10 - (res % 10)) / 3);
 
+		int need = (10 - (res % 10)) % 10;
+
+		if (starIdx % 2 == 0) {
+			System.out.println(need);
+		} else {
+			System.out.println((need * 7) % 10);
+		}
 	}
-
 }
