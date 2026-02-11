@@ -1,7 +1,7 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Solution {
 	public static void main(String[] args) {
@@ -24,32 +24,53 @@ public class Solution {
 					arr[i][1] = Integer.parseInt(parts[3]); // 오른쪽
 				}
 			}
-			int res = (int) postOrder(1, values, arr);
+
+			List<String> postifx = new ArrayList<>(); // 리스트에 후위표기식 저장
+			postOrder(1, values, arr, postifx);
+
+			int res = (int) evalStack(postifx); // 후위 표기식 계산 with Stack
 			System.out.print("#" + tc + " ");
 			System.out.println(res);
 
 		}
 	}
 
-	public static double postOrder(int idx, String[] values, int[][] arr) {
-		if (arr[idx][0] == 0 && arr[idx][1] == 0) {
-			return Double.parseDouble(values[idx]); // 둘 다 자식이 없다 -> 숫자임
-		}
+	public static void postOrder(int idx, String[] values, int[][] arr, List<String> list) {
+		// 후위표기식 저장
+		if (idx == 0) // 자식노드가 없으면
+			return;
+		postOrder(arr[idx][0], values, arr, list);
+		postOrder(arr[idx][1], values, arr, list);
+		list.add(values[idx]);
+	}
 
-		double left = postOrder(arr[idx][0], values, arr); // 왼쪽 값(얘는 숫자)
-		double right = postOrder(arr[idx][1], values, arr); // 오른쪽 값(얘도 숫자)
+	public static double evalStack(List<String> postfix) {
+		Stack<Double> stack = new Stack<>();
 
-		switch (values[idx]) { // 연산자 별 계산 결과 return
-		case "+":
-			return left + right;
-		case "-":
-			return left - right;
-		case "*":
-			return left * right;
-		case "/":
-			return left / right;
-		default:
-			return 0;
+		for (int i = 0; i < postfix.size(); i++) {
+			String tmp = postfix.get(i);
+			if (tmp.equals("+") || tmp.equals("-") || tmp.equals("*") || tmp.equals("/")) {
+				double n1 = stack.pop();
+				double n2 = stack.pop();
+
+				switch (tmp) {
+				case "+":
+					stack.push(n2 + n1);
+					break;
+				case "-":
+					stack.push(n2 - n1);
+					break;
+				case "*":
+					stack.push(n2 * n1);
+					break;
+				case "/":
+					stack.push(n2 / n1);
+					break;
+				}
+			} else {
+				stack.push(Double.parseDouble(tmp));
+			}
 		}
+		return stack.pop();
 	}
 }
