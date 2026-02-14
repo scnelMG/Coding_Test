@@ -33,6 +33,7 @@ public class Main {
             for (int j = 1; j <= (N - 1) % 20 + 1; j++) {
                 System.out.print(arr[i * 20 + j] + " ");
             }
+            System.out.println();
         }
     }
 }
