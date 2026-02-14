@@ -23,6 +23,8 @@ public class Main {
                     if (arr[num + j] == arr[num - j]) {
                         arr[num + j] = 1 - arr[num + j];
                         arr[num - j] = 1 - arr[num - j];
+                    } else {
+                        break;
                     }
 
                 }
@@ -30,10 +32,14 @@ public class Main {
         }
 
         for (int i = 0; i <= (N - 1) / 20; i++) {
-            for (int j = 1; j <= (N - 1) % 20 + 1; j++) {
-                System.out.print(arr[i * 20 + j] + " ");
+            for (int j = 1; j <= 20; j++) {
+                int idx = i * 20 + j;
+                if (idx > N)
+                    break;
+                System.out.print(arr[idx] + " ");
             }
             System.out.println();
         }
+
     }
 }
