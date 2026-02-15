@@ -3,25 +3,37 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
         int K = sc.nextInt();
-        int[][] arr = new int[5][2];
-        int[] dup = new int[2];
-        int dupCnt = 0;
+
+        int[] dir = new int[6];
+        int[] len = new int[6];
+
+        int maxW = 0, maxH = 0;
+        int idxW = -1, idxH = -1;
+
         for (int i = 0; i < 6; i++) {
-            int d = sc.nextInt(); // 1 2 3 4 (동서남북)
-            int len = sc.nextInt();
-            if (arr[d][0] == 0)
-                arr[d][0] = len;
-            else {
-                arr[d][1] = len;
-                dup[dupCnt++] = d;
+            dir[i] = sc.nextInt();
+            len[i] = sc.nextInt();
+
+            if (dir[i] == 1 || dir[i] == 2) { // 동/서 = 가로
+                if (len[i] > maxW) {
+                    maxW = len[i];
+                    idxW = i;
+                }
+            } else { // 남/북 = 세로
+                if (len[i] > maxH) {
+                    maxH = len[i];
+                    idxH = i;
+                }
             }
         }
-        int height = Math.max(arr[3][0], arr[4][0]);
-        int width = Math.max(arr[1][0], arr[2][0]);
-        int smallBox = arr[dup[0]][1] * arr[dup[1]][0];
-        int res = (height * width - smallBox) * K;
-        System.out.println(res);
 
+        int smallH = Math.abs(len[(idxW + 5) % 6] - len[(idxW + 1) % 6]);
+        int smallW = Math.abs(len[(idxH + 5) % 6] - len[(idxH + 1) % 6]);
+        int smallArea = smallW * smallH;
+
+        int area = maxW * maxH - smallArea;
+        System.out.println(area * K);
     }
 }
