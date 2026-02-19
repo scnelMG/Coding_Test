@@ -6,7 +6,7 @@ public class Main {
         int N = sc.nextInt();
         int minCnt = Integer.MAX_VALUE;
         int num_5 = 0;
-        while (N > num_5 * 5) {
+        while (N >= num_5 * 5) {
             int tmp = N - num_5 * 5;
             int cnt = 0;
             if (tmp % 3 == 0) {
