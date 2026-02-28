@@ -1,46 +1,55 @@
-import java.util.Arrays;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
-public class Solution {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        for (int tc = 1; tc <= 10; tc++) {
+            int N = Integer.parseInt(br.readLine());
+            LinkedList<Integer> ll = new LinkedList<>();
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < N; i++) {
+                ll.add(Integer.parseInt(st.nextToken()));
+            }
 
-		for (int tc = 1; tc <= 10; tc++) {
-			LinkedList<Integer> lst = new LinkedList<>(); // 링크드 리스트 생성
-			int N = sc.nextInt(); // 원본 암호문 길이
-			for (int i = 0; i < N; i++) { // 원본 암호문을 링크드리스트에 저장
-				lst.add(sc.nextInt());
-			}
-			int M = sc.nextInt(); // 삽입 명령어 개수
-			for (int i = 0; i < M; i++) {
-				String cmd = sc.next(); // 명령어 처리
-				if (cmd.equals("I")) {
-					int inputIdx = sc.nextInt(); // 삽입 시작 인덱스
-					int inputN = sc.nextInt(); // 삽입 개수
-					for (int j = 0; j < inputN; j++) {
-						lst.add(inputIdx + j, sc.nextInt()); // 삽입 시작 인덱스 부터 삽입 개수 만큼 삽입
-					}
-				} else if (cmd.equals("D")) {
-					int delIdx = sc.nextInt(); // 삭제 시작 인덱스
-					int delN = sc.nextInt(); // 삭제 개수
-					for (int j = 0; j < delN; j++) {
-						lst.remove(delIdx); 
-					}
-				} else if (cmd.equals("A")) {
-					int addN = sc.nextInt(); // 뒤에 추가 개수
-					for (int j = 0; j < addN; j++) {
-						lst.addLast(sc.nextInt()); 
-					}
-				}
-			}
+            int M = Integer.parseInt(br.readLine());
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < M; i++) {
+                String order = st.nextToken();
+                if (order.equals("I")) {
+                    int x = Integer.parseInt(st.nextToken());
+                    int y = Integer.parseInt(st.nextToken());
+                    for (int j = 0; j < y; j++) {
+                        ll.add(x + j, Integer.parseInt(st.nextToken()));
+                    }
 
-			System.out.print("#" + tc + " ");
-			for (int i = 0; i < 10; i++) { // 링크드리스트의 앞에서 부터 10개만 출력
-				System.out.print(lst.get(i) + " ");
-			}
-			System.out.println();
-		}
-	}
+                }
+                if (order.equals("D")) {
+                    int x = Integer.parseInt(st.nextToken());
+                    int y = Integer.parseInt(st.nextToken());
+                    for (int j = 0; j < y; j++) {
+                        ll.remove(x);
+                    }
 
+                }
+                if (order.equals("A")) {
+                    int y = Integer.parseInt(st.nextToken());
+                    for (int j = 0; j < y; j++) {
+                        ll.addLast(Integer.parseInt(st.nextToken()));
+                    }
+                }
+            }
+            System.out.print("#" + tc + " ");
+            for (int i = 0; i < 10; i++) {
+                System.out.print(ll.get(i) + " ");
+            }
+            System.out.println();
+
+        }
+
+    }
 }
