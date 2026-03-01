@@ -6,12 +6,14 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
-class Main {
+class Solution {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Deque<Integer> q = new LinkedList<>();
         int N = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+
         for (int i = 0; i < N; i++) {
             String command = br.readLine();
             if (command.contains("push")) {
@@ -21,35 +23,43 @@ class Main {
 
             } else if (command.contains("pop")) {
                 if (q.isEmpty()) {
-                    System.out.println(-1);
+                    sb.append(-1);
                 } else {
-                    System.out.println(q.pop());
+                    sb.append(q.pop());
                 }
+                sb.append("\n");
 
             } else if (command.contains("size")) {
-                System.out.println(q.size());
+                sb.append(q.size());
+                sb.append("\n");
 
             } else if (command.contains("empty")) {
                 if (q.isEmpty()) {
-                    System.out.println(1);
+                    sb.append(1);
                 } else {
-                    System.out.println(0);
+                    sb.append(0);
                 }
+                sb.append("\n");
             } else if (command.contains("front")) {
                 if (q.peekFirst() == null) {
-                    System.out.println(-1);
+                    sb.append(-1);
                 } else {
-                    System.out.println(q.peekFirst());
+                    sb.append(q.peekFirst());
                 }
+                sb.append("\n");
 
             } else if (command.contains("back")) {
                 if (q.peekLast() == null) {
-                    System.out.println(-1);
+                    sb.append(-1);
                 } else {
-                    System.out.println(q.peekLast());
+                    sb.append(q.peekLast());
                 }
+                sb.append("\n");
             }
+
         }
+
+        System.out.println(sb.toString());
 
     }
 }
