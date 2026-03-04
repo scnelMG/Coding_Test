@@ -4,237 +4,128 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int N;
-	static int[][] grid = new int[N][N];
-	static int[] dr = { -1, 0, 1, 0 }; // 상 : 0, 우 : 1, 하 : 2, 좌 : 3
-	static int[] dc = { 0, 1, 0, -1 };
-	static int[][] warmHole;
+    static int N;
+    static int[][] grid;
+    // 0: 상, 1: 우, 2: 하, 3: 좌
+    static int[] dr = { -1, 0, 1, 0 };
+    static int[] dc = { 0, 1, 0, -1 };
+    static int[][] warmHole;
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
-		for (int tc = 1; tc <= T; tc++) {
-			N = Integer.parseInt(br.readLine());
-			grid = new int[N][N];
-			warmHole = new int[5][4];
-			for (int i = 0; i < 5; i++) {
-				for (int j = 0; j < 4; j++) {
-					warmHole[i][j] = -1;
-				}
-			}
-			for (int i = 0; i < N; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < N; j++) {
-					int num = Integer.parseInt(st.nextToken());
-					grid[i][j] = num;
-					if (num == 6) {
-						if (warmHole[num - 6][0] == -1) {
-							warmHole[num - 6][0] = i;
-							warmHole[num - 6][1] = j;
-						} else {
-							warmHole[num - 6][2] = i;
-							warmHole[num - 6][3] = j;
-						}
+    public static void main(String[] args) throws NumberFormatException, IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine().trim());
 
-					}
-					if (num == 7) {
-						if (warmHole[num - 6][0] == -1) {
-							warmHole[num - 6][0] = i;
-							warmHole[num - 6][1] = j;
-						} else {
-							warmHole[num - 6][2] = i;
-							warmHole[num - 6][3] = j;
-						}
+        for (int tc = 1; tc <= T; tc++) {
+            N = Integer.parseInt(br.readLine().trim());
+            grid = new int[N][N];
+            warmHole = new int[11][4]; // 6~10번 웜홀 좌표 저장
 
-					}
-					if (num == 8) {
-						if (warmHole[num - 6][0] == -1) {
-							warmHole[num - 6][0] = i;
-							warmHole[num - 6][1] = j;
-						} else {
-							warmHole[num - 6][2] = i;
-							warmHole[num - 6][3] = j;
-						}
+            for (int i = 6; i <= 10; i++) {
+                for (int j = 0; j < 4; j++) warmHole[i][j] = -1;
+            }
 
-					}
-					if (num == 9) {
-						if (warmHole[num - 6][0] == -1) {
-							warmHole[num - 6][0] = i;
-							warmHole[num - 6][1] = j;
-						} else {
-							warmHole[num - 6][2] = i;
-							warmHole[num - 6][3] = j;
-						}
+            for (int i = 0; i < N; i++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < N; j++) {
+                    int num = Integer.parseInt(st.nextToken());
+                    grid[i][j] = num;
+                    if (num >= 6 && num <= 10) {
+                        if (warmHole[num][0] == -1) {
+                            warmHole[num][0] = i;
+                            warmHole[num][1] = j;
+                        } else {
+                            warmHole[num][2] = i;
+                            warmHole[num][3] = j;
+                        }
+                    }
+                }
+            }
 
-					}
-					if (num == 10) {
-						if (warmHole[num - 6][0] == -1) {
-							warmHole[num - 6][0] = i;
-							warmHole[num - 6][1] = j;
-						} else {
-							warmHole[num - 6][2] = i;
-							warmHole[num - 6][3] = j;
-						}
+            int maxV = 0;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (grid[i][j] == 0) { // 빈 공간에서만 시작
+                        for (int d = 0; d < 4; d++) {
+                            maxV = Math.max(maxV, game(i, j, d));
+                        }
+                    }
+                }
+            }
+            System.out.println("#" + tc + " " + maxV);
+        }
+    }
 
-					}
-				}
-			}
+    static int game(int sr, int sc, int d) {
+        int cnt = 0;
+        int r = sr;
+        int c = sc;
 
-			int maxV = 0;
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (grid[i][j] == 0) {
-						for (int d = 0; d < 4; d++) {
-							int num = game(i, j, d);
-							if (num > maxV)
-								maxV = num;
-						}
-					}
-				}
-			}
-			System.out.println("#" + tc + " " + maxV);
-//			int num = game(0, 4, 1);
+        while (true) {
+            int nr = r + dr[d];
+            int nc = c + dc[d];
 
-		}
-	}
+            // 1. 벽에 부딪히는 경우 (점수 +1, 방향 반대)
+            if (nr < 0 || nr >= N || nc < 0 || nc >= N) {
+                cnt++;
+                d = (d + 2) % 4;
+                r = nr; c = nc; // 벽 밖의 좌표를 일단 할당 (다음 이동에서 돌아옴)
+                continue;
+            }
 
-	static int game(int sr, int sc, int direction) {
-		int cnt = 0;
-		int r = sr;
-		int c = sc;
+            // 2. 종료 조건: 시작 위치로 돌아오거나 블랙홀(-1)을 만남
+            if ((nr == sr && nc == sc) || grid[nr][nc] == -1) {
+                return cnt;
+            }
 
-		while (true) {
-			int nr = r + dr[direction];
-			int nc = c + dc[direction];
-//			System.out.println(r + " " + c + " " + direction);
+            // 3. 블록을 만나는 경우
+            if (grid[nr][nc] >= 1 && grid[nr][nc] <= 5) {
+                cnt++;
+                d = changeDir(grid[nr][nc], d);
+                r = nr; c = nc;
+            }
+            // 4. 웜홀을 만나는 경우
+            else if (grid[nr][nc] >= 6) {
+                int num = grid[nr][nc];
+                if (nr == warmHole[num][0] && nc == warmHole[num][1]) {
+                    r = warmHole[num][2];
+                    c = warmHole[num][3];
+                } else {
+                    r = warmHole[num][0];
+                    c = warmHole[num][1];
+                }
+                // 진행 방향은 그대로 유지
+            }
+            // 5. 빈 공간인 경우
+            else {
+                r = nr; c = nc;
+            }
+        }
+    }
 
-			if (nr < 0 || nr >= N || nc < 0 || nc >= N) {
-				direction = (direction + 2) % 4; // 반대 방향
-				r = nr;
-				c = nc;
-				cnt++;
-			}
-
-			else if (grid[nr][nc] == 0) {
-				r = nr;
-				c = nc;
-			}
-
-			else if (grid[nr][nc] == 1) {
-				r = nr;
-				c = nc; // 이동
-				cnt++;
-				if (direction == 1 || direction == 0) // 우 상
-					direction = (direction + 2) % 4; // 반대 방향
-				else if (direction == 3) // 좌 -> 상
-					direction = 0;
-				else { // 하 -> 우
-					direction = 1;
-				}
-
-			}
-
-			else if (grid[nr][nc] == 2) {
-				r = nr;
-				c = nc; // 이동
-				cnt++;
-				if (direction == 1 || direction == 2) // 우 하
-					direction = (direction + 2) % 4; // 반대 방향
-				else if (direction == 0) // 상 -> 우
-					direction = 1;
-				else { // 좌 -> 하
-					direction = 2;
-				}
-
-			} else if (grid[nr][nc] == 3) {
-				r = nr;
-				c = nc; // 이동
-				cnt++;
-				if (direction == 2 || direction == 3) // 하 좌
-					direction = (direction + 2) % 4; // 반대 방향
-				else if (direction == 0) // 상 -> 좌
-					direction = 3;
-				else { // 우 -> 하
-					direction = 2;
-				}
-
-			} else if (grid[nr][nc] == 4) {
-				r = nr;
-				c = nc; // 이동
-				cnt++;
-				if (direction == 3 || direction == 0) // 좌 상
-					direction = (direction + 2) % 4; // 반대 방향
-				else if (direction == 2) // 하 -> 좌
-					direction = 3;
-				else { // 우 -> 상
-					direction = 0;
-				}
-
-			} else if (grid[nr][nc] == 5) {
-				r = nr;
-				c = nc; // 이동
-				cnt++;
-				direction = (direction + 2) % 4; // 반대 방향
-			}
-
-			else if (grid[nr][nc] == 6) {
-				if (nr == warmHole[0][0] && nc == warmHole[0][1]) {
-					r = warmHole[0][2];
-					c = warmHole[0][3];
-				} else {
-					r = warmHole[0][0];
-					c = warmHole[0][1];
-				}
-			}
-
-			else if (grid[nr][nc] == 7) {
-				if (nr == warmHole[1][0] && nc == warmHole[1][1]) {
-					r = warmHole[1][2];
-					c = warmHole[1][3];
-				} else {
-					r = warmHole[1][0];
-					c = warmHole[1][1];
-				}
-			}
-
-			else if (grid[nr][nc] == 8) {
-				if (nr == warmHole[2][0] && nc == warmHole[2][1]) {
-					r = warmHole[2][2];
-					c = warmHole[2][3];
-				} else {
-					r = warmHole[2][0];
-					c = warmHole[2][1];
-				}
-			}
-
-			else if (grid[nr][nc] == 9) {
-				if (nr == warmHole[3][0] && nc == warmHole[3][1]) {
-					r = warmHole[3][2];
-					c = warmHole[3][3];
-				} else {
-					r = warmHole[3][0];
-					c = warmHole[3][1];
-				}
-			}
-
-			else if (grid[nr][nc] == 10) {
-				if (nr == warmHole[4][0] && nc == warmHole[4][1]) {
-					r = warmHole[4][2];
-					c = warmHole[4][3];
-				} else {
-					r = warmHole[4][0];
-					c = warmHole[4][1];
-				}
-			}
-
-			else if (grid[nr][nc] == -1) {
-				return cnt;
-			}
-
-			if (r == sr && c == sc) {
-				return cnt;
-			}
-		}
-
-	}
+    // 블록 번호와 현재 방향에 따른 다음 방향 반환
+    static int changeDir(int block, int d) {
+        if (block == 1) {
+            if (d == 0) return 2; // 상 -> 하
+            if (d == 1) return 3; // 우 -> 좌
+            if (d == 2) return 1; // 하 -> 우
+            return 0;             // 좌 -> 상
+        } else if (block == 2) {
+            if (d == 0) return 1; // 상 -> 우
+            if (d == 1) return 3; // 우 -> 좌
+            if (d == 2) return 0; // 하 -> 상
+            return 2;             // 좌 -> 하
+        } else if (block == 3) {
+            if (d == 0) return 3; // 상 -> 좌
+            if (d == 1) return 2; // 우 -> 하
+            if (d == 2) return 0; // 하 -> 상
+            return 1;             // 좌 -> 우
+        } else if (block == 4) {
+            if (d == 0) return 2; // 상 -> 하
+            if (d == 1) return 0; // 우 -> 상
+            if (d == 2) return 3; // 하 -> 좌
+            return 1;             // 좌 -> 우
+        } else { // 5번 블록 (정사각형)
+            return (d + 2) % 4; // 반대 방향
+        }
+    }
 }
