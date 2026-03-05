@@ -50,10 +50,11 @@ public class Main {
 		int[] cam = cctvs.get(idx);
 		int r = cam[0], c = cam[1], type = cam[2];
 
-		for (int[] set : dirs[type]) {
+		for (int i = 0; i < dirs[type].length; i++) {
 			int[][] next = copyMap(map);
-			for (int d : set)
-				watch(next, r, c, d);
+			for (int j = 0; j < dirs[type][i].length; j++) {
+				watch(next, r, c, dirs[type][i][j]);
+			}
 			dfs(idx + 1, next);
 		}
 	}
