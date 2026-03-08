@@ -44,6 +44,9 @@ class Solution {
     }
 
     static void solve(int idx, int connectNum, int totalLength) {
+        if (connectNum + (list.size() - idx) < maxV) {
+            return;
+        }
         if (idx == list.size()) {
             if (maxV < connectNum) {
                 maxV = connectNum;
