@@ -37,7 +37,7 @@ class Solution {
             maxV = -1;
             minLength = Integer.MAX_VALUE;
             solve(0, 0, 0);
-            System.out.println("# " + tc + " " + minLength);
+            System.out.println("#" + tc + " " + minLength);
 
         }
 
