@@ -16,6 +16,7 @@ public class Main {
 		}
 		int M = Integer.parseInt(br.readLine());
 		st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < M; i++) {
 			int targetNum = Integer.parseInt(st.nextToken());
 			boolean isGood = false;
@@ -25,12 +26,13 @@ public class Main {
 				}
 			}
 			if (isGood)
-				System.out.println(1);
+				sb.append(1 + "\n");
 			else {
-				System.out.println(0);
+				sb.append(0 + "\n");
 			}
 
 		}
+		System.out.println(sb.toString());
 
 	}
 
