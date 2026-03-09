@@ -11,7 +11,7 @@ public class Main {
 	}
 
 	static int fac(int N) {
-		if (N == 1) {
+		if (N <= 1) {
 			return 1;
 		}
 
