@@ -58,11 +58,14 @@ class Solution {
 			return;
 		}
 
+		int startR = list.get(idx)[0]; // idx번째의 코어 좌표
+		int startC = list.get(idx)[1];
 		for (int d = 0; d < 4; d++) {
-			int r = list.get(idx)[0]; // idx번째의 코어 좌표
-			int c = list.get(idx)[1];
+			int r = startR;
+			int c = startC;
 			int length = 0; // 그일 전선의 길이
 			boolean isOkay = true; // 전선을 그을 수 있는지 확인
+
 			while (true) {
 				int nr = r + dr[d];
 				int nc = c + dc[d];
@@ -74,22 +77,22 @@ class Solution {
 					isOkay = false;
 					break;
 				}
+
 				length++; // 전선 길이 + 1
 				r = nr; // 그다음으로 진행
 				c = nc;
 			}
 
 			if (isOkay) { // 연결이 됐으면
-				draw(d, length, idx); // 격자에 표시
+				draw(d, length, startR, startC); // 격자에 표시
 				totalLength += length; // 전체 길이에 추가
 				coreCnt++; // 코어 개수 추가
 			}
 
-			solve(idx + 1, coreCnt, totalLength);
+			solve(idx + 1, coreCnt, totalLength); // 연결 여부에 상관없이 다음 재귀
 
-			// 다시 원상태로
-			if (isOkay) {
-				remove_draw(d, length, idx);
+			if (isOkay) { // 다시 원상태로
+				remove_draw(d, length, startR, startC);
 				coreCnt--;
 				totalLength -= length;
 			}
@@ -97,20 +100,15 @@ class Solution {
 
 	}
 
-	static void draw(int d, int length, int idx) {
-		int r = list.get(idx)[0];
-		int c = list.get(idx)[1];
+	static void draw(int d, int length, int startR, int startC) { // 코어 좌표 기준으로 방향에 맞춰서 그리기
 		for (int i = 1; i <= length; i++) {
-			grid[r + i * dr[d]][c + i * dc[d]] = 2;
+			grid[startR + i * dr[d]][startC + i * dc[d]] = 2;
 		}
-
 	}
 
-	static void remove_draw(int d, int length, int idx) {
-		int r = list.get(idx)[0];
-		int c = list.get(idx)[1];
+	static void remove_draw(int d, int length, int startR, int startC) {// 코어 좌표 기준으로 방향에 맞춰서 지우기
 		for (int i = 1; i <= length; i++) {
-			grid[r + i * dr[d]][c + i * dc[d]] = 0;
+			grid[startR + i * dr[d]][startC + i * dc[d]] = 0;
 		}
 
 	}
