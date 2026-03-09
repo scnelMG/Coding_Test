@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: -1 KB, 시간: -1 ms
+메모리: 18252 KB, 시간: 180 ms
 
 ### 분류
 
@@ -12,7 +12,7 @@
 
 ### 제출 일자
 
-2026년 3월 9일 09:35:32
+2026년 3월 9일 09:38:17
 
 ### 문제 설명
 
@@ -20,7 +20,7 @@
 
 ### 입력 
 
- <p>The single line of input contains a string of at least one and at most $50$ lowercase letters.</p>
+ <p>The single line of input contains a string of at least one and at most <mjx-container class="MathJax" jax="CHTML" style="font-size: 109%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mn class="mjx-n"><mjx-c class="mjx-c35"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>50</mn></math></mjx-assistive-mml><span aria-hidden="true" class="no-mathjax mjx-copytext">$50$</span></mjx-container> lowercase letters.</p>
 
 ### 출력 
 
