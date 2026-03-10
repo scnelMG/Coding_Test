@@ -23,14 +23,16 @@ public class Main {
 
 		int M = Integer.parseInt(br.readLine());
 		st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < M; i++) {
 			int num = Integer.parseInt(st.nextToken());
 			if (map.get(num) == null)
-				System.out.print(0 + " ");
+				sb.append(0 + " ");
 			else {
-				System.out.print(map.get(num) + " ");
+				sb.append(map.get(num) + " ");
 			}
 
 		}
+		System.out.println(sb);
 	}
 }
