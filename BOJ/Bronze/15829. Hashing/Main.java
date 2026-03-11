@@ -10,10 +10,13 @@ class Main {
 		int M = 1234567891;
 
 		long H = 0;
+		long pow = 1;
 		for (int i = 0; i < L; i++) {
-			H += (s.charAt(i) - 'a' + 1) * Math.pow(r, i);
+			long alpha = s.charAt(i) - 'a' + 1;
+
+			H = (H + (alpha * pow) % M) % M;
+			pow = (pow * r) % M;
 		}
-		H %= M;
 		System.out.println(H);
 
 	}
