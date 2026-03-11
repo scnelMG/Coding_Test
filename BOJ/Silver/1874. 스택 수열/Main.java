@@ -1,51 +1,40 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Stack;
 
-class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		int[] arr = new int[N];
-		for (int i = 0; i < N; i++) {
-			arr[i] = sc.nextInt();
-		}
-		Stack<Integer> stack = new Stack<>();
-		List<Integer> list = new ArrayList<>();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < N; i++) {
-			int num = arr[i];
-			if (stack.empty()) {
-				for (int j = 1; j <= num; j++) {
-					list.add(j);
-					stack.push(j);
-					sb.append("+\n");
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
 
-				}
-			}
-			if (stack.peek() < num) {
-				for (int j = stack.peek(); j <= num; j++) {
-					if (!list.contains(j)) {
-						list.add(j);
-						stack.push(j);
-						sb.append("+\n");
-					}
-				}
-			}
+        Stack<Integer> stack = new Stack<>();
+        StringBuilder sb = new StringBuilder();
 
-			if (stack.peek() == num) {
-				stack.pop();
-				sb.append("-\n");
-			}
+        int current = 1; // 스택에 넣을 차례인 다음 숫자를 기억하는 변수
 
-		}
-		if (!stack.empty()) {
-			System.out.println("NO");
-		}
+        for (int i = 0; i < N; i++) {
+            int num = Integer.parseInt(br.readLine());
 
-		else {
-			System.out.println(sb.toString());
-		}
-	}
+            // 1. 입력받은 숫자(num)에 도달할 때까지 오름차순으로 스택에 push
+            while (current <= num) {
+                stack.push(current);
+                sb.append("+\n");
+                current++; // 다음 숫자를 위해 1 증가
+            }
+
+            // 2. 스택의 맨 위 숫자가 입력받은 숫자와 일치하는지 확인
+            if (stack.peek() == num) {
+                stack.pop();
+                sb.append("-\n");
+            } else {
+                // 맨 위 숫자가 num과 다르다면(num보다 크다면) 불가능한 수열!
+                System.out.println("NO");
+                return; // 더 이상 진행할 필요 없이 프로그램 즉시 종료
+            }
+        }
+
+        // 3. 끝까지 통과했다면 저장해둔 +, - 기호들 출력
+        System.out.println(sb.toString());
+    }
 }
