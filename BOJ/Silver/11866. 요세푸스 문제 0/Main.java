@@ -16,7 +16,7 @@ class Main {
 		System.out.print("<");
 
 		while (list.size() > 1) {
-			idx = (idx + 2) % list.size();
+			idx = (idx + (K - 1)) % list.size();
 			System.out.print(list.get(idx) + ", ");
 			list.remove(idx);
 		}
