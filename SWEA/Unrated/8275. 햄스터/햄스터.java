@@ -34,19 +34,17 @@ public class Solution {
 			}
 
 			solve(0, 0);
-			StringBuilder sb = new StringBuilder();
-			sb.append("#" + tc + " ");
-			boolean isNo = true;
-			for (int i = 0; i < N; i++) {
-				sb.append(res[i] + " ");
-				if (res[i] != 0)
-					isNo = false;
-			}
-			if (isNo)
+
+			if (maxV == -1) {
 				System.out.println("#" + tc + " -1");
-			else {
-				System.out.println(sb.toString());
+			} else {
+				System.out.print("#" + tc + " ");
+				for (int i = 0; i < N; i++) {
+					System.out.print(res[i] + " ");
+				}
+				System.out.println();
 			}
+			
 
 		}
 
@@ -55,7 +53,7 @@ public class Solution {
 	static void solve(int idx, int cSum) {
 		if (idx == N) { // 모든 군집의 개수를 다 정했으면
 			if (check()) { // 조건 만족하는지 확인
-				if (cSum > maxV) { // 조건 만족하고, 해당 경우의 합이 최대를 갱신하면 
+				if (cSum > maxV) { // 조건 만족하고, 해당 경우의 합이 최대를 갱신하면
 					maxV = cSum; // 최대값 갱신
 					for (int i = 0; i < N; i++) {
 						res[i] = arr[i]; // 결과 군집 정보 갱신
@@ -81,7 +79,7 @@ public class Solution {
 
 			int sum = 0; // arr에 담긴 실제 합 구하기
 			for (int j = l; j <= r; j++) {
-				sum += arr[j]; 
+				sum += arr[j];
 			}
 			if (sum != s) // 조건 속 합과 실제 합이 다르면 false
 				return false;
