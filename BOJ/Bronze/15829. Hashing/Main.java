@@ -9,7 +9,7 @@ class Main {
 		int r = 31;
 		int M = 1234567891;
 
-		int H = 0;
+		long H = 0;
 		for (int i = 0; i < L; i++) {
 			H += (s.charAt(i) - 'a' + 1) * Math.pow(r, i);
 		}
