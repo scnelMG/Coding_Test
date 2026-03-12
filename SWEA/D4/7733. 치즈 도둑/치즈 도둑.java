@@ -8,7 +8,6 @@ import java.util.StringTokenizer;
 
 public class Solution {
 	static int N;
-	static boolean[][] isEat;
 	static boolean[][] visited;
 	static int[][] grid;
 	static int[] dr = { -1, 1, 0, 0 };
@@ -20,7 +19,6 @@ public class Solution {
 		for (int tc = 1; tc <= T; tc++) {
 			N = Integer.parseInt(br.readLine());
 			grid = new int[N][N];
-			isEat = new boolean[N][N];
 			int maxDay = -1; // 최대 일자
 
 			for (int i = 0; i < N; i++) {
@@ -31,10 +29,10 @@ public class Solution {
 						maxDay = grid[i][j];
 				}
 			}
+
 			int maxV = 1; // 최대 덩어리 개수
-			for (int day = 1; day <= maxDay; day++) { // 1~최대 일자까지 반복
-				check(day); // 요정이 일단 치즈 먹고
-				int num = countLoaf(); // 그에 대해서 덩어리 개수 세기
+			for (int day = 1; day < maxDay; day++) { // 1~최대 일자-1까지 반복
+				int num = countLoaf(day); // 그 날짜에 대해서 덩어리 개수 세기
 				if (num > maxV) // 덩어리 최대 개수 갱신
 					maxV = num;
 			}
@@ -43,21 +41,14 @@ public class Solution {
 		}
 	}
 
-	static int countLoaf() { // 덩어리 세는 함수
-		visited = new boolean[N][N]; // 방문 했는지 확인하는 배열
-
-		// 요정이 먹은 부분도 방문 하지 못한다고 설정 -> isEat 배열 복사
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				visited[i][j] = isEat[i][j];
-			}
-		}
+	static int countLoaf(int day) { // 덩어리 세는 함수
+		boolean[][] visited = new boolean[N][N]; // 방문 했는지 확인하는 배열
 
 		int cnt = 0; // 덩어리 개수 저장 변수
 		Queue<int[]> q = new ArrayDeque<>();
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) { // 전체를 돌면서
-				if (visited[i][j] == false) { // 방문 안한 격자 찾기
+				if (visited[i][j] == false && grid[i][j] > day) { // 방문 안하고 요정이 안먹은 격자에 대해
 					cnt++;
 					q.add(new int[] { i, j }); // 해당 격자를 출발점으로 설정
 					visited[i][j] = true;
@@ -72,31 +63,20 @@ public class Solution {
 							if (nr < 0 || nc < 0 || nr >= N || nc >= N)
 								continue;
 
-							// 이미 방문했으면 끝
-							if (visited[nr][nc])
+							// 이미 방문했거나 요정이 먹었으면 끝
+							if (visited[nr][nc] || grid[nr][nc] <= day)
 								continue;
 
 							// 큐에 저장
 							q.add(new int[] { nr, nc });
 							visited[nr][nc] = true;
-						}
-
-					}
+						} // 네방향 탐색 for문
+					} // bfs while 문
 				}
-
 			}
 		}
 
 		return cnt;
-	}
-
-	static void check(int day) { // 날짜별로 요정이 먹는 치즈 확인하는 함수
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (grid[i][j] == day) // 해당 날짜에 대한 값을 가지면 -> 요정이 먹는다!
-					isEat[i][j] = true;
-			}
-		}
 	}
 
 }
