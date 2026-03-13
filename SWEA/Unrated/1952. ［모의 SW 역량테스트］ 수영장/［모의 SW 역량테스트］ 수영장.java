@@ -1,48 +1,30 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
-class Solution {
-	static int[] price = new int[4];
-	static int[] month = new int[13];
-	static int minV;
+public class Solution {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
-
+		int T = sc.nextInt();
 		for (int tc = 1; tc <= T; tc++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < 4; i++) {
-				price[i] = Integer.parseInt(st.nextToken());
+			int d = sc.nextInt();
+			int m1 = sc.nextInt();
+			int m3 = sc.nextInt();
+			int y = sc.nextInt(); // 일일권, 한달권, 세달권, 연간권의 가격
+
+			int[] month = new int[13]; // 각 달의 이용계획
+			for (int i = 1; i < 13; i++) {
+				month[i] = sc.nextInt();
+			} // 입력끝
+
+			int[] dp = new int[13];
+			dp[1] = Math.min(d * month[1], m1);
+			dp[2] = dp[1] + Math.min(m1, month[2] * d);
+
+			for (int i = 3; i < 13; i++) {
+				dp[i] = Math.min(dp[i - 3] + m3, Math.min(dp[i - 1] + m1, dp[i - 1] + month[i] * d));
 			}
-			st = new StringTokenizer(br.readLine());
-			for (int i = 1; i <= 12; i++) {
-				month[i] = Integer.parseInt(st.nextToken());
-			}
+			System.out.println("#" + tc + " " + Math.min(dp[12], y));
 
-			minV = price[3]; // 최소값 초기화를 1년짜리로
-			solve(1, 0);
-			System.out.println("#"+tc + " " + minV);
 		}
-	}
-
-	static void solve(int idx, int cSum) {
-		if (idx >= 13) {
-			if (cSum < minV)
-				minV = cSum;
-			return;
-		}
-		if (month[idx] == 0)
-			solve(idx + 1, cSum);
-		else {
-			solve(idx + 1, cSum + month[idx] * price[0]); // 하루짜리 사용
-
-			solve(idx + 1, cSum + price[1]); // 한달짜리 사용
-
-			solve(idx + 3, cSum + price[2]); // 세달짜리 사용 -> idx + 3
-		}
-
 	}
 }
