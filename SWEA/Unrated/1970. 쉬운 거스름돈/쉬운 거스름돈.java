@@ -12,7 +12,6 @@ public class Solution {
         for (int tc = 1; tc <= T; tc++) {
             int N = sc.nextInt();
             
-            // 이렇게 하면 배열 크기와 반복 횟수가 10분의 1로 줄어듭니다.
             int target = N / 10; 
 
             int[] dp = new int[target + 1];
