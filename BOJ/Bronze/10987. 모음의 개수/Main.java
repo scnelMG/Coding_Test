@@ -6,7 +6,7 @@ public class Main {
 		String s = sc.next();
 		int cnt = 0;
 		for (int i = 0; i < s.length(); i++) {
-			if ("aeuio".indexOf(s.charAt(i)) == -1) {
+			if ("aeiou".indexOf(s.charAt(i)) != -1) {
 				cnt++;
 			}
 		}
