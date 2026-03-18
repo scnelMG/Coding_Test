@@ -12,13 +12,9 @@ class Main {
 	}
 
 	static int solve(int N, int K) {
-		// 1. 수빈이가 앞서거나 같은 위치면 뒤로 걷기만 가능
+		// 1. N >= K -> 뒷걸음질 쳐야하는 경우 -> 그냥 -1 계속해야함
 		if (N >= K)
 			return N - K;
-
-		// 2. 무한 루프 방지용 (N=0, K=1 일 때)
-		if (K == 1)
-			return 1;
 
 		if (K % 2 == 0) {
 			// 짝수: 그냥 걷기 vs 순간이동 절반에서 오기
