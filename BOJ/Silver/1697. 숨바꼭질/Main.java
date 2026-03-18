@@ -17,9 +17,9 @@ class Main {
 			return N - K;
 
 		if (K % 2 == 0) {
-			return Math.min(K - N, 1 + solve(N, K / 2));
+			return Math.min(K - N, solve(N, K / 2) + 1);
 		} else {
-			return Math.min(solve(N, K + 1), solve(N, K - 1)) + 1;
+			return Math.min(solve(N, (K + 1) / 2), solve(N, (K - 1) / 2)) + 2;
 		}
 
 	}
