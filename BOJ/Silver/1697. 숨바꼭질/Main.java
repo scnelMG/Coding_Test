@@ -15,6 +15,8 @@ class Main {
 	static int solve(int N, int K) {
 		if (N >= K)
 			return N - K;
+		if (K == 1)
+			return 1;
 
 		if (K % 2 == 0) {
 			return Math.min(K - N, solve(N, K / 2) + 1);
