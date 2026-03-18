@@ -16,6 +16,10 @@ class Main {
 		if (N >= K)
 			return N - K;
 
+		// 2. 무한 루프 방지용 (N=0, K=1 일 때)
+		if (N == 0 && K == 1)
+			return 1;
+
 		if (K % 2 == 0) {
 			// 짝수: 그냥 걷기 vs 순간이동 절반에서 오기
 			return Math.min(K - N, solve(N, K / 2) + 1);
