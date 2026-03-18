@@ -20,32 +20,52 @@ class Main {
 		q.add(N);
 		int cnt = 1;
 		position[N] = cnt;
-		int ways = 0;
 
 		while (!q.isEmpty()) {
 			int size = q.size();
 			cnt++;
+			boolean isFind = false;
 			for (int i = 0; i < size; i++) {
 				int cur = q.poll();
-				int[] nexts = { cur + 1, cur - 1, cur * 2 };
-				for (int next : nexts) {
-					if (next < 0 || next > 100000)
-						continue;
 
-					if (next == K)
-						ways++;
-
-					if (position[next] == 0 || position[next] == cnt) {
-						position[next] = cnt;
-						q.add(next);
+				if (cur + 1 <= 100000) {
+					if (cur + 1 == K)
+						isFind = true;
+					if (position[cur + 1] == 0 || position[cur + 1] == cnt) {
+						position[cur + 1] = cnt;
+						q.add(cur + 1);
 					}
 				}
+				if (cur - 1 >= 0) {
+					if (cur - 1 == K)
+						isFind = true;
+					if (position[cur - 1] == 0 || position[cur - 1] == cnt) {
+						position[cur - 1] = cnt;
+						q.add(cur - 1);
+					}
+				}
+				if (cur * 2 <= 100000) {
+					if (cur * 2 == K)
+						isFind = true;
+					if (position[cur * 2] == 0 || position[cur * 2] == cnt) {
+						position[cur * 2] = cnt;
+						q.add(cur * 2);
+					}
+				}
+
 			}
-			if (ways > 0)
+
+			if (isFind)
 				break;
 
 		}
 		System.out.println(cnt - 1);
+		int ways = 0;
+		while (!q.isEmpty()) {
+			if (q.poll() == K) {
+				ways++;
+			}
+		}
 		System.out.println(ways);
 	}
 }
