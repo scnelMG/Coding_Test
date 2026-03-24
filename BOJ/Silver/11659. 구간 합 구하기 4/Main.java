@@ -11,20 +11,19 @@ public class Main {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		long[] arr = new long[N + 1];
+		int[] arr = new int[N + 1];
 		st = new StringTokenizer(br.readLine());
 		arr[0] = 0;
 		for (int i = 1; i <= N; i++) {
 			arr[i] = arr[i - 1] + Integer.parseInt(st.nextToken());
 		}
-		System.out.println(Arrays.toString(arr));
 
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
 			int s = Integer.parseInt(st.nextToken());
 			int e = Integer.parseInt(st.nextToken());
 
-			long res = arr[e] - arr[s - 1];
+			int res = arr[e] - arr[s - 1];
 			System.out.println(res);
 		}
 	}
