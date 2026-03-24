@@ -11,7 +11,7 @@ public class Main {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		int[] arr = new int[N + 1];
+		long[] arr = new long[N + 1];
 		st = new StringTokenizer(br.readLine());
 		arr[0] = 0;
 		for (int i = 1; i <= N; i++) {
@@ -24,7 +24,7 @@ public class Main {
 			int s = Integer.parseInt(st.nextToken());
 			int e = Integer.parseInt(st.nextToken());
 
-			int res = arr[e] - arr[s - 1];
+			long res = arr[e] - arr[s - 1];
 			System.out.println(res);
 		}
 	}
