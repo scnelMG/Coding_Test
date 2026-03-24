@@ -39,6 +39,9 @@ public class Main {
 
 	//
 	static void solve(int idx, int usedCnt) {
+		if (usedCnt >= minV)
+			return;
+
 		if (idx == ones.size()) { // idx가 1만 담긴 리스트의 길이와 같다 -> 모든 1을 다 탐색했다! -> 마무리
 			if (minV > usedCnt) // 최소값 갱신
 				minV = usedCnt;
@@ -50,7 +53,7 @@ public class Main {
 		int y = ones.get(idx)[1];
 
 		if (grid[x][y] == 1) { // 접근한 1이 방문처리 안된거(그냥 1인 경우)
-			for (int size = 1; size <= 5; size++) { // 사이즈 5 -> 1로 확인
+			for (int size = 5; size > 0; size--) { // 사이즈 5 -> 1로 확인
 				if (paperCnt[size] > 0 && isGood(x, y, size)) { // 해당 사이즈의 색종이가 남아있고, 그 종이로 딱 1만 덮을 수 있으면
 					draw(x, y, size, 2); // 방문처리한다 -> 2로 칠함
 					paperCnt[size]--; // 해당 크기의 색종이 사용 처리
