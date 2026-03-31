@@ -19,19 +19,26 @@ class Main {
 				maxV = height[i];
 		}
 
-		int res = -1;
-		for (int i = maxV; i >= 0; i--) {
-			int sum = 0;
-			for (int h = 0; h < N; h++) {
-				if (height[h] - i > 0)
-					sum += (height[h] - i);
+		// 이진 탐색
+		int low = 0;
+		int high = maxV;
+		int res = 0;
+
+		while (low <= high) {
+			int mid = low + (high - low) / 2;
+			long sum = 0;
+
+			for (int i = 0; i < N; i++) {
+				if (height[i] - mid > 0)
+					sum += (height[i] - mid);
 			}
 
 			if (sum >= M) {
-				res = i;
-				break;
+				res = mid;
+				low = mid + 1;
+			} else {
+				high = mid - 1;
 			}
-
 		}
 
 		System.out.println(res);
