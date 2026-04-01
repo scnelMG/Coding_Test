@@ -28,10 +28,11 @@ public class Main {
 				map.put(arrSort[i], rank++);
 			}
 		}
-
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < N; i++) {
-			System.out.print(map.get(arr[i]) + " ");
+			sb.append(map.get(arr[i]) + " ");
 		}
+		System.out.println(sb.toString());
 
 	}
 
