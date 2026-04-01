@@ -4,147 +4,84 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int[][] magnet;
+    static int[][] magnet;
+    static int[] top; // 각 자석의 빨간색 화살표(0번 위치)가 배열의 어느 인덱스를 가리키는지 저장
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine()); // 테스트 케이스 개수 입력
+    public static void main(String[] args) throws NumberFormatException, IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
 
-		for (int tc = 1; tc <= T; tc++) {
-			int K = Integer.parseInt(br.readLine()); // K -> 회전 횟수 입력
+        for (int tc = 1; tc <= T; tc++) {
+            int K = Integer.parseInt(br.readLine());
+            
+            magnet = new int[5][8];
+            top = new int[5]; // 매 테케마다 0으로 초기화됨
 
-			// 자석 정보 저장 배열
-			// 총 4개인데, 1번부터 사용할거임 -> 크기 4+1
-			// 톱니는 그냥 0번부터 -> 크기 8
-			magnet = new int[5][8];
+            // 자석 정보 입력
+            for (int i = 1; i <= 4; i++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < 8; j++) {
+                    magnet[i][j] = Integer.parseInt(st.nextToken());
+                }
+            }
 
-			// 자석 정보 입력
-			for (int i = 1; i <= 4; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < 8; j++) {
-					magnet[i][j] = Integer.parseInt(st.nextToken()); // 0이면 N극, 1이면 S극
-				}
-			}
+            // 회전 정보 입력
+            for (int i = 0; i < K; i++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+                int num = Integer.parseInt(st.nextToken());
+                int dir = Integer.parseInt(st.nextToken());
+                solve(num, dir);
+            }
 
-			// 회전 정보 입력
-			for (int i = 0; i < K; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
-				int num = Integer.parseInt(st.nextToken()); // 회전하는 톱니의 번호
-				int dir = Integer.parseInt(st.nextToken()); // 회전하는 방향 (1 / -1)
-				solve(num, dir); // 풀이 시작
-			}
+            // 점수 계산 (각 자석의 top 인덱스의 값을 확인)
+            int sum = 0;
+            for (int i = 1; i <= 4; i++) {
+                if (magnet[i][top[i]] == 1) {
+                    sum += (1 << (i - 1));
+                }
+            }
+            System.out.println("#" + tc + " " + sum);
+        }
+    }
 
-			// 합계 구하기
-			int sum = 0;
-			for (int i = 1; i < 5; i++) {
-				if (magnet[i][0] == 1) // 0번 인덱스(빨간색 화살표 위치)가 1(S극)이면 합계
-					sum += (1 << (i - 1)); // 1, 2, 4 ,8 -> 2의 제곱만큽 증가 -> 비트로 구현
-			}
-			System.out.println("#" + tc + " " + sum);
+    static void solve(int cur, int dir) {
+        // 각 자석의 회전 방향 기록 (1: 시계, -1: 반시계, 0: 정지)
+        int[] dirs = new int[5];
+        dirs[cur] = dir;
 
-		}
-	}
+        // 1. 왼쪽 방향 자석들 연쇄 확인
+        for (int i = cur; i > 1; i--) {
+            // 현재 자석의 왼쪽 극(top+6)과 왼쪽 자석의 오른쪽 극(top+2) 비교
+            int leftOfCurrent = magnet[i][(top[i] + 6) % 8];
+            int rightOfLeft = magnet[i - 1][(top[i - 1] + 2) % 8];
+            
+            if (leftOfCurrent != rightOfLeft) {
+                dirs[i - 1] = -dirs[i]; // 반대 방향으로 회전
+            } else {
+                break; // 극이 같으면 연쇄 중단
+            }
+        }
 
-	static void solve(int cur, int dir) {
+        // 2. 오른쪽 방향 자석들 연쇄 확인
+        for (int i = cur; i < 4; i++) {
+            // 현재 자석의 오른쪽 극(top+2)과 오른쪽 자석의 왼쪽 극(top+6) 비교
+            int rightOfCurrent = magnet[i][(top[i] + 2) % 8];
+            int leftOfRight = magnet[i + 1][(top[i + 1] + 6) % 8];
+            
+            if (rightOfCurrent != leftOfRight) {
+                dirs[i + 1] = -dirs[i]; // 반대 방향으로 회전
+            } else {
+                break;
+            }
+        }
 
-		// 현재 상태에서 회전해야하는 톱니부터 확인
-		// 회전하면 톱니의 정보가 변함 -> 그럼 접해있는 톱니 정보가 바뀜
-		// 미리 접해있는 톱니 정보를 다 보고, 회전이 되는지 확인하기
-
-		// 회전 여부를 저장하는 boolean 배열
-		boolean[] isTurn = new boolean[5]; // 얘도 1번부터 쓸거임 -> 크기 4 + 1
-		isTurn[cur] = true; // 돌리는 톱니는 무조건 회전
-
-		// 왼쪽 오른쪽 각각 확인할거임
-		// 돌리는 톱니의 정보가 바뀌면 안되기 때문에 tmpCur 변수를 사용해서 cur이 안바뀌도록
-
-		// 왼쪽 체크
-		int tmpCur = cur;
-		int l = tmpCur - 1;
-		while (l >= 1) { // 1~4 범위 안에
-			if (magnet[tmpCur][6] != magnet[l][2]) { // 접하는 톱니의 정보가 다르면 -> 회전시켜야함
-				isTurn[l] = true;
-				// 또한 옆의 톱니가 돌아가야하면, 그 옆도 돌아가는지 확인해야함(연쇄)
-				tmpCur = l;
-				l = tmpCur - 1;
-			} else {
-				break;
-			}
-
-		}
-
-		// 오른쪽 체크
-		tmpCur = cur;
-		int r = tmpCur + 1;
-		while (r <= 4) { // 1~4 범위 안에
-			if (magnet[tmpCur][2] != magnet[r][6]) { // 접하는 톱니의 정보가 다르면 -> 회전시켜야함
-				isTurn[r] = true;
-				// 또한 옆의 톱니가 돌아가야하면, 그 옆도 돌아가는지 확인해야함(연쇄)
-				tmpCur = r;
-				r = tmpCur + 1;
-			} else {
-				break;
-			}
-		}
-
-		// 이제 회전시켜야하는 톱니를 돌리기
-		turn(cur, dir); // 선택된 톱니를 회전
-
-		// 회전도 왼쪽, 오른쪽 나눠서 진행
-		// 연쇄되어 회전된다면, 회전 방향 정하는게 왼쪽 오른쪽 나눠서 진행하는게 편함
-
-		l = cur - 1;
-		r = cur + 1;
-		int tmpDir = dir;
-
-		// 왼쪽 회전
-		while (l >= 1) {
-			tmpDir = -1 * tmpDir; // 회전 방향은 기존의 반대 -> 곱하기 -1
-			if (isTurn[l]) { // 회전해야하는 톱니면 회전
-				turn(l, tmpDir);
-				l--; // 그 다음 왼쪽으로 이동
-			} else {
-				break;
-			}
-
-		}
-
-		// 오른쪽 회전
-		tmpDir = dir;
-		while (r <= 4) {
-			tmpDir = -1 * tmpDir;
-			if (isTurn[r]) {
-				turn(r, tmpDir);
-				r++; // 그 다음 오른쪽으로 이동
-			} else {
-				break;
-			}
-		}
-
-	}
-
-	// 회전 -> 돌려야하는 톱니 번호랑 방향을 입력받음
-	static void turn(int num, int dir) {
-		// 시계 방향
-		if (dir == 1) {
-
-			// 예시 : 1 0 0 1 1 -> 1 1 0 0 1
-			int tmp = magnet[num][7]; // 맨 뒤에꺼 저장해두고
-			for (int i = 7; i > 0; i--) { // 그 뒤로 덮어쓰기 -> 거꾸로 해야 정보 손실없이 제대로 덮힘
-				magnet[num][i] = magnet[num][i - 1];
-			}
-			magnet[num][0] = tmp;
-		}
-		// 반시계 방향
-		else {
-			// 예시 : 1 0 0 1 1 -> 0 0 1 1 1
-			int tmp = magnet[num][0];
-			for (int i = 0; i < 7; i++) {
-				magnet[num][i] = magnet[num][i + 1];
-			}
-			magnet[num][7] = tmp;
-		}
-
-	}
-
+        // 3. 기록된 방향을 바탕으로 한 번에 회전(top 인덱스만 갱신) 적용
+        for (int i = 1; i <= 4; i++) {
+            if (dirs[i] == 1) { // 시계 방향 회전 (기준점이 왼쪽으로 1칸 이동하는 것과 같음)
+                top[i] = (top[i] + 7) % 8; // -1 대신 +7을 하여 음수 나머지 연산 방지
+            } else if (dirs[i] == -1) { // 반시계 방향 회전 (기준점이 오른쪽으로 1칸 이동)
+                top[i] = (top[i] + 1) % 8;
+            }
+        }
+    }
 }
