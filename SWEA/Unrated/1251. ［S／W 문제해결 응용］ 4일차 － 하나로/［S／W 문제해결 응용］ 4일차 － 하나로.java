@@ -1,35 +1,11 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.StringTokenizer;
 
 public class Solution {
 	static int[] p;
-
-	// 간선 정보를 담을 클래스 (가중치 기준 오름차순 정렬)
-	static class Edge implements Comparable<Edge> {
-		int from, to;
-		long cost;
-
-		public Edge(int from, int to, long cost) {
-			this.from = from;
-			this.to = to;
-			this.cost = cost;
-		}
-
-		@Override
-		public String toString() {
-			return "Edge [from=" + from + ", to=" + to + ", cost=" + cost + "]";
-		}
-
-		// 오름차순 정렬
-		@Override
-		public int compareTo(Edge o) {
-			return Long.compare(this.cost, o.cost);
-		}
-
-	}
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -57,18 +33,31 @@ public class Solution {
 			// 세율 E 입력
 			double E = Double.parseDouble(br.readLine());
 
-			// 모든 가능한 간선 생성 - N개의 섬에서 2개를 고르는 모든 경우의 수
-			ArrayList<Edge> edges = new ArrayList<>();
+			// 모든 가능한 간선 생성 (2차원 배열 사용)
+			// 간선의 총 개수: N * (N - 1) / 2
+			int edgeCount = N * (N - 1) / 2;
+			long[][] edges = new long[edgeCount][3];
+			int idx = 0;
+
 			for (int i = 0; i < N - 1; i++) {
 				for (int j = i + 1; j < N; j++) {
 					// 거리의 제곱(L^2) 계산
 					long distSq = (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]);
-					edges.add(new Edge(i, j, distSq));
+					edges[idx][0] = i; // from
+					edges[idx][1] = j; // to
+					edges[idx][2] = distSq; // cost
+					idx++;
 				}
 			}
 
-			// 가중치 기준으로 오름차순 정렬
-			Collections.sort(edges);
+			// 가중치(cost) 기준으로 오름차순 정렬 (람다식 활용)
+			Arrays.sort(edges, new Comparator<long[]>() {
+				@Override
+				public int compare(long[] a, long[] b) {
+					// a[2]와 b[2]는 각각 두 간선의 가중치(cost)
+					return Long.compare(a[2], b[2]);
+				}
+			});
 
 			// 부모 정보 배열 초기화
 			p = new int[N];
@@ -80,11 +69,15 @@ public class Solution {
 			long totalWeight = 0; // 선택된 간선들의 L^2 합
 			int pick = 0; // 선택한 간선의 수
 
-			for (Edge edge : edges) {
+			for (int i = 0; i < edgeCount; i++) {
+				int from = (int) edges[i][0];
+				int to = (int) edges[i][1];
+				long cost = edges[i][2];
+
 				// 싸이클이 발생하지 않는 경우에만 선택 (루트가 다를 때)
-				if (findSet(edge.from) != findSet(edge.to)) {
-					union(edge.from, edge.to);
-					totalWeight += edge.cost;
+				if (findSet(from) != findSet(to)) {
+					union(from, to);
+					totalWeight += cost;
 					pick++;
 				}
 				// N-1개의 간선을 모두 골랐다면 종료 (최소 신장 트리 완성)
