@@ -1,55 +1,74 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Scanner;
+ 
 class Solution {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine().trim());
-
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+ 
         for (int tc = 1; tc <= T; tc++) {
-            int N = Integer.parseInt(br.readLine().trim());
-            int M = Integer.parseInt(br.readLine().trim());
-
-            // 2차원 배열 하나로 끝! (도달 가능 여부만 체크)
-            boolean[][] connected = new boolean[N + 1][N + 1];
-
-            for (int i = 0; i < M; i++) {
-                StringTokenizer st = new StringTokenizer(br.readLine());
-                int a = Integer.parseInt(st.nextToken());
-                int b = Integer.parseInt(st.nextToken());
-                connected[a][b] = true; // a가 b보다 작다는 사실을 기록
-            }
-
-            // [플로이드-워셜 핵심 로직] 3중 for문
-            // k: 거쳐가는 학생, i: 출발 학생, j: 도착 학생
-            for (int k = 1; k <= N; k++) {
-                for (int i = 1; i <= N; i++) {
-                    for (int j = 1; j <= N; j++) {
-                        // i가 k보다 작고, k가 j보다 작으면 -> i는 j보다 작다!
-                        if (connected[i][k] && connected[k][j]) {
-                            connected[i][j] = true;
-                        }
-                    }
-                }
-            }
-
-            int answer = 0;
-            // 모든 학생에 대해 자신과 연결된(크거나 작은) 학생 수 세기
+            int N = sc.nextInt();
+            int M = sc.nextInt();
+ 
+            // 정방향 인접리스트
+            List<Integer>[] adjList = new ArrayList[N + 1];
+ 
+            // 역방향 인접리스트
+            List<Integer>[] adjListRev = new ArrayList[N + 1];
+ 
+            // 리스트 초기화
             for (int i = 1; i <= N; i++) {
-                int count = 0;
-                for (int j = 1; j <= N; j++) {
-                    // i에서 j로 갈 수 있거나 (i가 더 작음)
-                    // j에서 i로 올 수 있다면 (i가 더 큼)
-                    if (connected[i][j] || connected[j][i]) {
-                        count++;
-                    }
-                }
-                // 나를 제외한 모든 사람(N-1)과의 관계를 안다면 순위 확정
-                if (count == N - 1) answer++;
+                adjList[i] = new ArrayList<>();
+                adjListRev[i] = new ArrayList<>();
             }
-
-            System.out.println("#" + tc + " " + answer);
+ 
+            // 인접리스트에 관계 정보 넣기
+            for (int i = 0; i < M; i++) {
+                int a = sc.nextInt();
+                int b = sc.nextInt();
+                adjList[a].add(b);
+                adjListRev[b].add(a);
+            }
+ 
+            // 키 알 수 있는 학생 수
+            int res = 0;
+            for (int i = 1; i <= N; i++) {
+                int cnt = bfs(i, N, adjList);
+                int cntRev = bfs(i, N, adjListRev);
+ 
+                // 정방향으로 연결된 학생수 + 역방향으로 연결된 학생수 = 자기를 제외한 학생 수
+                // 이면 키가 몇번째인지 알 수 있음
+                if (cnt + cntRev == N - 1)
+                    res++;
+            }
+            System.out.println("#" + tc + " " + res);
+ 
         }
+    }
+ 
+    // 연결된 학생 수 구하는 bfs 함수
+    static int bfs(int i, int n, List<Integer>[] arr) {
+        Queue<Integer> q = new ArrayDeque<>();
+        boolean[] visited = new boolean[n + 1];
+        q.add(i);
+        visited[i] = true;
+ 
+        int cnt = 0;
+        while (!q.isEmpty()) {
+            int cur = q.poll();
+ 
+            for (int next : arr[cur]) {
+                if (!visited[next]) {
+                    visited[next] = true;
+                    q.add(next);
+                    cnt++;
+                }
+            }
+        }
+ 
+        return cnt;
     }
 }
