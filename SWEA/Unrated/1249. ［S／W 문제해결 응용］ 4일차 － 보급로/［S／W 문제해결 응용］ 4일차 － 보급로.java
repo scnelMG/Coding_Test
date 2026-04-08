@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -16,6 +17,7 @@ class Solution {
 			int N = Integer.parseInt(br.readLine());
 			int[][] grid = new int[N][N];
 			int[][] minDist = new int[N][N];
+
 			for (int i = 0; i < N; i++) {
 				String tmp = br.readLine();
 				for (int j = 0; j < N; j++) {
@@ -24,14 +26,25 @@ class Solution {
 				}
 			}
 
-			Queue<int[]> q = new ArrayDeque<>();
-			q.add(new int[] { 0, 0 });
-			minDist[0][0] = grid[0][0];
+			// 2 인덱스의 값으로 정렬
+			PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
+			minDist[0][0] = 0;
+			pq.offer(new int[] { 0, 0, 0 });
 
-			while (!q.isEmpty()) {
-				int[] cur = q.poll();
+			// PQ로 구현
+			while (!pq.isEmpty()) {
+				int[] cur = pq.poll();
 				int r = cur[0];
 				int c = cur[1];
+				int dist = cur[2];
+
+				if (r == N - 1 && c == N - 1) {
+					System.out.println("#" + tc + " " + dist);
+					break;
+				}
+
+				if (dist > minDist[r][c])
+					continue;
 
 				for (int d = 0; d < 4; d++) {
 					int nr = r + dr[d];
@@ -40,15 +53,14 @@ class Solution {
 					if (nr < 0 || nc < 0 || nr >= N || nc >= N)
 						continue;
 
-					int nextDist = minDist[r][c] + grid[nr][nc];
+					int nextDist = dist + grid[nr][nc];
 					if (nextDist < minDist[nr][nc]) {
 						minDist[nr][nc] = nextDist;
-						q.offer(new int[] { nr, nc });
+						pq.offer(new int[] { nr, nc, nextDist });
 					}
 				}
 
 			}
-			System.out.println("#" + tc + " " + minDist[N - 1][N - 1]);
 
 		}
 	}
