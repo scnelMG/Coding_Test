@@ -77,8 +77,8 @@ public class Main {
 			while (!q.isEmpty()) {
 
 				// 모든 빈칸을 감염 시켰으면 최소값 갱신
-				if (goodCnt == emptyCnt && time < minV) {
-					minV = time;
+				if (goodCnt == emptyCnt) {
+					minV = Math.min(minV, time);
 					return;
 				}
 
@@ -98,10 +98,11 @@ public class Main {
 							continue;
 
 						// 방문을 안했고, 해당 칸이 빈칸이면 -> 해당 칸을 q에 넣고 방문처리하고, 감염개수 늘리기
-						if (!visited[nr][nc] && grid[nr][nc] == 0) {
+						if (!visited[nr][nc] && grid[nr][nc] != 1) {
 							q.add(new int[] { nr, nc }); // q에 넣기
 							visited[nr][nc] = true; // 방문처리
-							goodCnt++; // 감염개수 +1
+							if (grid[nr][nc] == 0)
+								goodCnt++; // 감염개수 +1
 						}
 					}
 				}
