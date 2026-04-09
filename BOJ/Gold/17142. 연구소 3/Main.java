@@ -97,8 +97,8 @@ public class Main {
 						if (nr < 0 || nc < 0 || nr >= N || nc >= N)
 							continue;
 
-						// 방문을 안했고, 해당 칸이 빈칸이면 -> 해당 칸을 q에 넣고 방문처리하고, 감염개수 늘리기
-						if (!visited[nr][nc] && grid[nr][nc] != 1) {
+						// 방문을 안했고, 해당 칸이 벽이 아니면 -> 해당 칸을 q에 넣고 방문처리하고, 감염개수 늘리기
+						if (!visited[nr][nc] && grid[nr][nc] != 1) { // 벽이 아닌 경우에 대해서 -> 빈칸뿐 아니라 바이러스가 있어도 지나갈 수 이씀
 							q.add(new int[] { nr, nc }); // q에 넣기
 							visited[nr][nc] = true; // 방문처리
 							if (grid[nr][nc] == 0)
