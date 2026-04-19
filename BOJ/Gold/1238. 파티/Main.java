@@ -1,14 +1,12 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
-    static int N; // 노드 개수
+    static int N; 
 
-    // Edge 클래스 지정
     static class Edge implements Comparable<Edge> {
         int to, time;
 
@@ -17,7 +15,6 @@ class Main {
             this.time = time;
         }
 
-        // PQ 이용한 다익스트라를 위한 Comparable
         @Override
         public int compareTo(Edge o) {
             return this.time - o.time;
@@ -31,11 +28,12 @@ class Main {
         int M = Integer.parseInt(st.nextToken());
         int X = Integer.parseInt(st.nextToken());
 
-        // 인접 리스트로 그래프 정보 입력 (정방향만 사용)
-        List<Edge>[] adjList = new ArrayList[N + 1];
-
+        // 인접 행렬(2차원 배열) 1개만 선언
+        int[][] graph = new int[N + 1][N + 1];
+        
+        // 연결되지 않은 상태를 표현하기 위해 무한대(또는 -1)로 초기화
         for (int i = 1; i <= N; i++) {
-            adjList[i] = new ArrayList<>();
+            Arrays.fill(graph[i], -1); 
         }
 
         // 그래프 정보 입력
@@ -45,61 +43,52 @@ class Main {
             int to = Integer.parseInt(st.nextToken());
             int time = Integer.parseInt(st.nextToken());
 
-            adjList[from].add(new Edge(to, time)); // 정방향만 저장
+            // 2차원 배열에 저장 (단일 배열)
+            graph[from][to] = time; 
         }
 
-        // 1. X -> 집 (X에서 출발하는 다익스트라 1번 수행)
-        int[] backDist = solve(adjList, X);
+        // 다익스트라로 최단거리 구하기 (배열 하나로 방향만 다르게)
+        int[] goDist = solve(graph, X, true);  // 집 -> X (역방향: graph[to][from] 조회)
+        int[] backDist = solve(graph, X, false); // X -> 집 (정방향: graph[from][to] 조회)
 
-        // 최대 시간 저장 변수
         int maxV = 0;
-        
-        // 2. 집 -> X (각 노드 i에서 출발하는 다익스트라 N번 수행)
         for (int i = 1; i <= N; i++) {
-            if (i == X)
-                continue;
-                
-            // 노드 i에서 출발하는 다익스트라 수행
-            int[] goDist = solve(adjList, i); 
-            
-            // i에서 출발해 X로 가는 거리(goDist[X]) + X에서 i로 돌아오는 거리(backDist[i])
-            maxV = Math.max(maxV, goDist[X] + backDist[i]);
+            if (i == X) continue;
+            maxV = Math.max(maxV, goDist[i] + backDist[i]);
         }
 
-        // 최대 시간 출력
         System.out.println(maxV);
     }
 
-    // 다익스트라 후 -> 거리 배열 리턴 함수
-    static int[] solve(List<Edge>[] graph, int start) {
+    // isReverse가 true면 역방향 탐색, false면 정방향 탐색
+    static int[] solve(int[][] graph, int start, boolean isReverse) {
+        boolean[] visited = new boolean[N + 1];
+        int[] dist = new int[N + 1];
 
-        boolean[] visited = new boolean[N + 1]; // 방문 확인 배열
-        int[] dist = new int[N + 1]; // 최단 거리 저장 배열
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[start] = 0;
 
-        // 다익스트라를 위한 초기값 설정
-        for (int i = 0; i <= N; i++) {
-            dist[i] = Integer.MAX_VALUE;
-        }
-        dist[start] = 0; // 출발 위치는 0으로
-
-        // PQ를 이용한 다익스트라
         PriorityQueue<Edge> pq = new PriorityQueue<>();
-        pq.add(new Edge(start, 0)); // 출발점 넣기
+        pq.add(new Edge(start, 0));
 
         while (!pq.isEmpty()) {
-            Edge cur = pq.poll(); // PQ에서 하나 꺼냄
+            Edge cur = pq.poll();
 
-            if (visited[cur.to]) // 방문했었으면 패스
-                continue;
-            visited[cur.to] = true; // 방문 처리
+            if (visited[cur.to]) continue;
+            visited[cur.to] = true;
 
-            for (Edge e : graph[cur.to]) { // 꺼낸 간선이 향하는 노드들에 대해서
-                if (!visited[e.to] && dist[cur.to] + e.time < dist[e.to]) {
-                    dist[e.to] = dist[cur.to] + e.time; // 거리 배열에 업데이트
-                    pq.add(new Edge(e.to, dist[e.to])); // PQ에 해당 간선 추가
+            // 1부터 N까지 모든 노드를 확인 (인접 리스트와 다른 부분)
+            for (int nxt = 1; nxt <= N; nxt++) {
+                // 역방향이면 graph[nxt][cur], 정방향이면 graph[cur][nxt] 값을 확인
+                int time = isReverse ? graph[nxt][cur.to] : graph[cur.to][nxt];
+
+                // 연결되어 있고(-1이 아님), 아직 방문하지 않았으며, 거리가 더 짧아진다면 갱신
+                if (time != -1 && !visited[nxt] && dist[cur.to] + time < dist[nxt]) {
+                    dist[nxt] = dist[cur.to] + time;
+                    pq.add(new Edge(nxt, dist[nxt]));
                 }
             }
         }
-        return dist; // 계산된 거리 배열 전체 반환
+        return dist;
     }
 }
